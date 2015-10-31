@@ -8,7 +8,8 @@ class YahooMarketCalendar::Client
 
   API_URL = 'http://info.finance.yahoo.co.jp/fx/marketcalendar/'
 
-  def get_market_events(start_date: Date.today, **options)
+  def get_market_events(**options)
+    start_date   = options[:start_date]   || Date.today
     end_date     = options[:end_date]     || start_date
     country_code = options[:country_code] || YahooMarketCalendar::CountryCode::ALL
     priority     = options[:priority]     || YahooMarketCalendar::Priority::ALL
