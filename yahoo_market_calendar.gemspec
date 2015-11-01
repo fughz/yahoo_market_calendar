@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["fughz.h@gmail.com"]
 
   spec.summary       = "simple client of Yahoo! Finance Market Clendar(http://info.finance.yahoo.co.jp/fx/marketcalendar/)"
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage      = "https://github.com/fughz/yahoo_market_calendar"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
