@@ -30,7 +30,7 @@ class YahooMarketCalendar::Client
             day_events.date = parsed_date
           elsif not day_events.nil?
             # got all specified day event
-            next
+            return day_events
           end
         else
           unless day_events.nil?
@@ -47,7 +47,7 @@ class YahooMarketCalendar::Client
         end
       end
     end
-    day_events
+    return day_events
   end
         
   private
