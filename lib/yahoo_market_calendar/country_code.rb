@@ -15,4 +15,5 @@ module YahooMarketCalendar::CountryCode
   SG  = "SGD" # Republic of Singapore
   HK  = "HKD" # Hong Kong
   CN  = "CNY" # China
+  UNKNOWN = "unknown"
 end

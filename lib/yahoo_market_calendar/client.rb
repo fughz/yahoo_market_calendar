@@ -8,36 +8,31 @@ class YahooMarketCalendar::Client
 
   API_URL = 'http://info.finance.yahoo.co.jp/fx/marketcalendar/'
 
-  def get_market_events(**options)
-    start_date   = options[:start_date]   || Date.today
-    end_date     = options[:end_date]     || start_date
+  def get_market_events(date: Date.today, **options)
     country_code = options[:country_code] || YahooMarketCalendar::CountryCode::ALL
     priority     = options[:priority]     || YahooMarketCalendar::Priority::ALL
 
-    if end_date < start_date
-    end
-    
     charset = nil
-    html = open(create_api_url(start_date, country_code, priority)) do |f|
+    html = open(create_api_url(date, country_code, priority)) do |f|
       charset = f.charset
       f.read # read html text
     end
     
     doc = Nokogiri::HTML.parse(html, nil, charset)
 
-    day_events_array = []
     day_events = nil
 
     doc.xpath("//*[@id='main']/div[3]/table").each do |node|
       node.css('tr').each do |row|
         unless row.css('th.date').empty? then
-          parsed_date = get_event_date(start_date.year, row.css('th.date').inner_text)
-          if parsed_date < start_date or end_date < parsed_date
+          parsed_date = get_event_date(date.year, row.css('th.date').inner_text)
+          if parsed_date === date
+            day_events = YahooMarketCalendar::DayEvents.new
+            day_events.date = parsed_date
+          elsif not day_events.nil?
+            # got all specified day event
             next
           end
-          day_events = YahooMarketCalendar::DayEvents.new
-          day_events.date = parsed_date
-          day_events_array << day_events
         else
           unless day_events.nil?
             event = YahooMarketCalendar::Event.new
@@ -48,12 +43,12 @@ class YahooMarketCalendar::Client
             event.last_data = row.css('td.last').inner_text
             event.expectation_data = row.css('td.expectation').inner_text
             event.result_data = row.css('td.result').inner_text
-            day_events.events << event
+            day_events << event
           end
         end
       end
     end
-    day_events_array
+    day_events
   end
         
   private

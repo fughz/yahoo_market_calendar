@@ -11,8 +11,8 @@ day_events.each do |event|
   puts "time: " + (event.time.nil? ? "N/A" : event.time.strftime("%H:%M")) +
        " name: " +  event.name
   puts "  last: " + event.last_data +
-       "expectation: " + event.expectation_data +
-       "result: " + event.result_data
+       " expectation: " + event.expectation_data +
+       " result: " + event.result_data
   puts "  priority: " + event.priority
   puts "  country_code: " + event.country_code
 end
