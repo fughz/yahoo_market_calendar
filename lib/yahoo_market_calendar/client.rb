@@ -1,6 +1,5 @@
 # coding: utf-8
 require 'date'
-require 'chronic'
 require 'open-uri'
 require 'nokogiri'
 
@@ -36,10 +35,10 @@ class YahooMarketCalendar::Client
         else
           unless day_events.nil?
             event = YahooMarketCalendar::Event.new
-            event.time = get_event_time(day_events.date, row.css('td.time').inner_text)
+            event.time = row.css('td.time').inner_text
             event.name = row.css('td.event').inner_text
-            event.priority = row.css('td.priority').css('span').attribute('class').value
-            event.country_code = row.css('td.event').css('span').attribute('class').value
+            event.priority = get_priority(row.css('td.priority').css('span').attribute('class').value)
+            event.country_code = get_country_code(row.css('td.event').css('span').attribute('class').value)
             event.last_data = row.css('td.last').inner_text
             event.expectation_data = row.css('td.expectation').inner_text
             event.result_data = row.css('td.result').inner_text
@@ -64,8 +63,54 @@ class YahooMarketCalendar::Client
     Date.new(year, month, day)
   end
 
-  def get_event_time(date, time_text)
-    Chronic.parse(date.strftime("%Y-%m-%d") + time_text)
+  def get_priority(priority_class_text)
+    /icoRating(\d+)/ =~ priority_class_text
+    case $1.to_i
+    when 1 then
+      YahooMarketCalendar::Priority::LOW
+    when 2 then
+      YahooMarketCalendar::Priority::MIDDLE
+    when 3 then
+      YahooMarketCalendar::Priority::HIGH
+    else
+      YahooMarketCalendar::Priority::UNKNOWN
+    end
+  end
+
+  def get_country_code(country_class_text)
+    /icon\d+ ico([a-zA-Z]+)\d+/ =~ country_class_text
+    case $1
+    when "Jpn" then
+      YahooMarketCalendar::CountryCode::JP
+    when "Usa" then
+      YahooMarketCalendar::CountryCode::US
+    when "Eu" then
+      YahooMarketCalendar::CountryCode::EUR
+    when "Ger" then
+      YahooMarketCalendar::CountryCode::DE
+    when "Fra" then
+      YahooMarketCalendar::CountryCode::FR
+    when "Gbr" then
+      YahooMarketCalendar::CountryCode::GB
+    when "Aus" then
+      YahooMarketCalendar::CountryCode::AU
+    when "Nzl" then
+      YahooMarketCalendar::CountryCode::NZ
+    when "Sui" then
+      YahooMarketCalendar::CountryCode::CH
+    when "Can" then
+      YahooMarketCalendar::CountryCode::CA
+    when "Rsa" then
+      YahooMarketCalendar::CountryCode::ZA
+    when "Sin" then
+      YahooMarketCalendar::CountryCode::SG
+    when "Hkg" then
+      YahooMarketCalendar::CountryCode::HK
+    when "Cnh" then
+      YahooMarketCalendar::CountryCode::CN
+    else
+      YahooMarketCalendar::CountryCode::UNKNOWN
+    end
   end
 end
 

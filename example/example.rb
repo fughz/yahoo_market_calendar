@@ -8,8 +8,7 @@ day_events = client.get_market_events(date: Date.new(2015, 10, 30),
                                       priority: YahooMarketCalendar::Priority::ALL)
 
 day_events.each do |event|
-  puts "time: " + (event.time.nil? ? "N/A" : event.time.strftime("%H:%M")) +
-       " name: " +  event.name
+  puts "time: " + event.time + " name: " +  event.name
   puts "  last: " + event.last_data +
        " expectation: " + event.expectation_data +
        " result: " + event.result_data

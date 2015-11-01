@@ -14,6 +14,7 @@ describe YahooMarketCalendar::Client do
       expect(day_events.date).to eq this_week_wednesday
       
       day_events.each do |event|
+        expect(event.time.empty?).to eq false
         expect(event.name.empty?).to eq false
         expect(event.priority.empty?).to eq false
         expect(event.country_code.empty?).to eq false
